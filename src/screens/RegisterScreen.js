@@ -43,7 +43,17 @@ const RegisterScreen = () => {
     <FormContainer>
       <div className="text-center mb-4">
         <h1 className="fw-bold">
-          <i className="fas fa-user-plus me-2"></i>Sign Up
+          <span style={{
+            backgroundColor: '#ef7c8e',
+            color: 'white',
+            padding: '8px 20px',
+            borderRadius: '25px',
+            display: 'inline-block',
+            boxShadow: '0 4px 6px rgba(239, 124, 142, 0.2)',
+            marginBottom: '10px'
+          }}>
+            <i className="fas fa-user-plus me-2"></i>Sign Up
+          </span>
         </h1>
         <p className="text-muted" style={{ textShadow: '0.5px 0.5px 1px rgba(0,0,0,0.1)' }}>
           Create an account to access the trainee management system
