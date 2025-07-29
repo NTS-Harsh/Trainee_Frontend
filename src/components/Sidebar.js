@@ -58,9 +58,7 @@ const Sidebar = () => {
               backgroundColor: collapsed ? 'rgba(255, 255, 255, 0.9)' : 'transparent',
               borderRadius: '50%',
               boxShadow: collapsed ? '0 2px 5px rgba(0, 0, 0, 0.1)' : 'none',
-              justifyContent: 'center',
-              background: 'none',
-              boxShadow: 'none'
+              justifyContent: 'center'
             }}
           >
             <i className={`fas fa-${collapsed ? 'chevron-right' : 'chevron-left'} fa-lg`}></i>
@@ -84,7 +82,7 @@ const Sidebar = () => {
               <Nav.Link
                 className="mb-2"
                 style={{
-                  color: '#c62f45',
+                  color: '#000000',
                   fontWeight: '500',
                   textAlign: collapsed ? 'center' : 'left',
                   padding: collapsed ? '0.5rem' : '0.5rem 1rem',
@@ -104,7 +102,7 @@ const Sidebar = () => {
               <Nav.Link
                 className="mb-2"
                 style={{
-                  color: '#c62f45',
+                  color: '#000000',
                   fontWeight: '500',
                   textAlign: collapsed ? 'center' : 'left',
                   padding: collapsed ? '0.5rem' : '0.5rem 1rem',
@@ -139,7 +137,7 @@ const Sidebar = () => {
                   <Nav.Link
                     className="mb-2"
                     style={{
-                      color: '#c62f45',
+                      color: '#000000',
                       fontWeight: '500',
                       textAlign: collapsed ? 'center' : 'left',
                       padding: collapsed ? '0.5rem' : '0.5rem 1rem',
@@ -159,7 +157,7 @@ const Sidebar = () => {
                   <Nav.Link
                     className="mb-2"
                     style={{
-                      color: '#c62f45',
+                      color: '#000000',
                       fontWeight: '500',
                       textAlign: collapsed ? 'center' : 'left',
                       padding: collapsed ? '0.5rem' : '0.5rem 1rem',

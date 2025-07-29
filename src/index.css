@@ -211,7 +211,7 @@ button:active, .btn:active {
 }
 
 .sidebar .nav-link {
-  color: #ef7c8e;
+  color: #000000;
   border-radius: var(--border-radius);
   transition: var(--hover-transition);
   padding: 12px 18px;
@@ -228,7 +228,7 @@ button:active, .btn:active {
 .sidebar .nav-link.active {
   transform: translateX(8px) translateZ(5px);
   background-color: rgba(198, 47, 69, 0.1);
-  color: var(--accent-color);
+  color: #000000;
   font-weight: 600;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(239, 124, 142, 0.2);
