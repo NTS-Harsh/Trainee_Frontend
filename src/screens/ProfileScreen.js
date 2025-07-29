@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Row, Col, Card } from 'react-bootstrap';
+import AdminAvatar from '../components/AdminAvatar';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import Message from '../components/Message';
@@ -61,6 +62,7 @@ const ProfileScreen = () => {
 
   return (
     <>
+      {userInfo && userInfo.role === 'admin' && <AdminAvatar />}
       <Row className="justify-content-center">
         <Col md={8} className="profile-form-container">
           <Card className="bg-white shadow-sm border mb-4 profile-form-card" style={{

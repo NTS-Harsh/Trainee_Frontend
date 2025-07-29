@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Row, Col, Card, ListGroup } from 'react-bootstrap';
+import AdminAvatar from '../components/AdminAvatar';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import Message from '../components/Message';
@@ -26,6 +27,7 @@ const ViewProfileScreen = () => {
 
   return (
     <>
+      {userInfo && userInfo.role === 'admin' && <AdminAvatar />}
       <Row className="justify-content-center">
         <Col md={8}>
           <Card className="bg-white shadow-sm border mb-4 profile-card" style={{
@@ -126,4 +128,4 @@ const ViewProfileScreen = () => {
   );
 };
 
-export default ViewProfileScreen;
+export default ViewProfileScreen; 

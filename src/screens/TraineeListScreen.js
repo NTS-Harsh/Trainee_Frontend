@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Button, Row, Col, Card, Badge, Form, InputGroup } from 'react-bootstrap';
+import AdminAvatar from '../components/AdminAvatar';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import Message from '../components/Message';
@@ -93,6 +94,7 @@ const TraineeListScreen = () => {
 
   return (
     <>
+      <AdminAvatar />
       <div className="bg-white p-4 rounded shadow-sm border mb-4 trainee-list-container" style={{
         borderRadius: '15px',
         transition: 'all 0.3s ease',
@@ -240,7 +242,10 @@ const TraineeListScreen = () => {
                         height: '100px',
                         boxShadow: '0 5px 15px rgba(239, 124, 142, 0.2)',
                         border: '3px solid rgba(239, 124, 142, 0.3)',
-                        transition: 'all 0.3s ease'
+                        transition: 'all 0.3s ease',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
                       }}>
                         <img
                           src={getAvatarUrl(trainee._id)}
@@ -259,7 +264,7 @@ const TraineeListScreen = () => {
                           }}
                           onError={(e) => {
                             e.target.onerror = null;
-                            e.target.src = 'https://via.placeholder.com/100x100?text=User';
+                            e.target.src = 'https://api.dicebear.com/7.x/identicon/svg?seed=fallback';
                           }}
                         />
                       </div>

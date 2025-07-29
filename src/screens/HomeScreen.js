@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Row, Col, Card, Form, Button, Container } from 'react-bootstrap';
+import AdminAvatar from '../components/AdminAvatar';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../redux/actions/userActions';
@@ -23,6 +24,48 @@ const HomeScreen = () => {
 
   // If user is already logged in, redirect to dashboard
   if (userInfo) {
+    // If user is admin, show admin dashboard
+    if (userInfo.role === 'admin') {
+      return (
+        <Container className="py-5">
+          <AdminAvatar />
+          <div className="text-center">
+            <h2 className="mb-4">Welcome back, Admin!</h2>
+            <Button
+              onClick={() => navigate('/admin/trainee-list')}
+              style={{
+                backgroundColor: '#ef7c8e',
+                borderColor: '#e05c70',
+                color: 'white',
+                borderRadius: '25px',
+                padding: '12px 25px',
+                fontWeight: '600',
+                boxShadow: '0 4px 6px rgba(239, 124, 142, 0.2)',
+                margin: '10px'
+              }}
+            >
+              <i className="fas fa-users me-2"></i> Manage Trainees
+            </Button>
+            <Button
+              onClick={() => navigate('/view-profile')}
+              style={{
+                backgroundColor: '#ef7c8e',
+                borderColor: '#e05c70',
+                color: 'white',
+                borderRadius: '25px',
+                padding: '12px 25px',
+                fontWeight: '600',
+                boxShadow: '0 4px 6px rgba(239, 124, 142, 0.2)',
+                margin: '10px'
+              }}
+            >
+              <i className="fas fa-user me-2"></i> View Profile
+            </Button>
+          </div>
+        </Container>
+      );
+    }
+    // For regular users
     navigate('/view-profile');
     return null;
   }
