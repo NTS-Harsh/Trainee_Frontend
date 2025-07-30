@@ -4,8 +4,8 @@ import { Form, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { createTrainee } from '../redux/actions/traineeActions';
-import { TRAINEE_CREATE_RESET } from '../redux/constants/traineeConstants';
+import { createTrainee, resetTraineeCreate } from '../redux/slices/traineeSlice';
+import { createTraineeRequest } from '../redux/sagas/traineeSagas';
 
 const TraineeCreateScreen = () => {
   const navigate = useNavigate();
@@ -13,17 +13,15 @@ const TraineeCreateScreen = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [department, setDepartment] = useState('');
+  const [gender, setGender] = useState('male');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState(null);
 
   const dispatch = useDispatch();
 
-  const traineeCreate = useSelector((state) => state.traineeCreate);
-  const { loading, error, success } = traineeCreate;
-
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin;
+  const { loading, error, success } = useSelector((state) => state.trainee);
+  const { userInfo } = useSelector((state) => state.user);
 
   useEffect(() => {
     if (!userInfo || userInfo.role !== 'admin') {
@@ -32,7 +30,7 @@ const TraineeCreateScreen = () => {
     }
 
     if (success) {
-      dispatch({ type: TRAINEE_CREATE_RESET });
+      dispatch(resetTraineeCreate());
       navigate('/admin/traineelist');
     }
   }, [dispatch, navigate, success, userInfo]);
@@ -42,14 +40,15 @@ const TraineeCreateScreen = () => {
     if (password !== confirmPassword) {
       setMessage('Passwords do not match');
     } else {
-      dispatch(
-        createTrainee({
-          name,
-          email,
-          department,
-          password,
-        })
-      );
+      // Dispatch only one action to avoid potential infinite loops
+      const traineeData = {
+        name,
+        email,
+        department,
+        gender,
+        password,
+      };
+      dispatch(createTrainee(traineeData));
     }
   };
 
@@ -107,6 +106,33 @@ const TraineeCreateScreen = () => {
               onChange={(e) => setDepartment(e.target.value)}
               required
             ></Form.Control>
+          </Form.Group>
+
+          <Form.Group controlId="gender" className="mb-3">
+            <Form.Label>Gender</Form.Label>
+            <div>
+              <Form.Check
+                type="radio"
+                label="Male"
+                name="gender"
+                id="male"
+                value="male"
+                checked={gender === 'male'}
+                onChange={(e) => setGender(e.target.value)}
+                inline
+                className="me-4"
+              />
+              <Form.Check
+                type="radio"
+                label="Female"
+                name="gender"
+                id="female"
+                value="female"
+                checked={gender === 'female'}
+                onChange={(e) => setGender(e.target.value)}
+                inline
+              />
+            </div>
           </Form.Group>
 
           <Form.Group controlId="password" className="mb-3">

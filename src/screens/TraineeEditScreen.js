@@ -7,8 +7,12 @@ import Loader from '../components/Loader';
 import {
   getTraineeDetails,
   updateTrainee,
-} from '../redux/actions/traineeActions';
-import { TRAINEE_UPDATE_RESET } from '../redux/constants/traineeConstants';
+  resetTraineeUpdate
+} from '../redux/slices/traineeSlice';
+import {
+  getTraineeDetailsRequest,
+  updateTraineeRequest
+} from '../redux/sagas/traineeSagas';
 
 const TraineeEditScreen = () => {
   const { id } = useParams();
@@ -17,22 +21,19 @@ const TraineeEditScreen = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [department, setDepartment] = useState('');
+  const [gender, setGender] = useState('male');
   const [password, setPassword] = useState('');
 
   const dispatch = useDispatch();
 
-  const traineeDetails = useSelector((state) => state.traineeDetails);
-  const { loading, error, trainee } = traineeDetails;
-
-  const traineeUpdate = useSelector((state) => state.traineeUpdate);
+  const { loading, error, trainee } = useSelector((state) => state.trainee);
   const {
     loading: loadingUpdate,
     error: errorUpdate,
-    success: successUpdate,
-  } = traineeUpdate;
-
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin;
+    success: successUpdate
+  } = useSelector((state) => state.trainee);
+  
+  const { userInfo } = useSelector((state) => state.user);
 
   useEffect(() => {
     if (!userInfo || userInfo.role !== 'admin') {
@@ -41,30 +42,33 @@ const TraineeEditScreen = () => {
     }
 
     if (successUpdate) {
-      dispatch({ type: TRAINEE_UPDATE_RESET });
+      dispatch(resetTraineeUpdate());
       navigate('/admin/traineelist');
     } else {
       if (!trainee.name || trainee._id !== id) {
+        // Dispatch only one action to avoid potential infinite loops
         dispatch(getTraineeDetails(id));
       } else {
         setName(trainee.name);
         setEmail(trainee.email);
         setDepartment(trainee.department);
+        setGender(trainee.gender || 'male');
       }
     }
   }, [dispatch, navigate, id, trainee, successUpdate, userInfo]);
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(
-      updateTrainee({
-        _id: id,
-        name,
-        email,
-        department,
-        password: password ? password : undefined,
-      })
-    );
+    // Dispatch only one action to avoid potential infinite loops
+    const traineeData = {
+      _id: id,
+      name,
+      email,
+      department,
+      gender,
+      password: password ? password : undefined,
+    };
+    dispatch(updateTrainee(traineeData));
   };
 
   return (
@@ -122,6 +126,33 @@ const TraineeEditScreen = () => {
                 value={department}
                 onChange={(e) => setDepartment(e.target.value)}
               ></Form.Control>
+            </Form.Group>
+
+            <Form.Group controlId="gender" className="mb-3">
+              <Form.Label>Gender</Form.Label>
+              <div>
+                <Form.Check
+                  type="radio"
+                  label="Male"
+                  name="gender"
+                  id="male"
+                  value="male"
+                  checked={gender === 'male'}
+                  onChange={(e) => setGender(e.target.value)}
+                  inline
+                  className="me-4"
+                />
+                <Form.Check
+                  type="radio"
+                  label="Female"
+                  name="gender"
+                  id="female"
+                  value="female"
+                  checked={gender === 'female'}
+                  onChange={(e) => setGender(e.target.value)}
+                  inline
+                />
+              </div>
             </Form.Group>
 
             <Form.Group controlId="password" className="mb-3">

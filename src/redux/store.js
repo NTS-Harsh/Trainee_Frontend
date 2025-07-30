@@ -1,53 +1,41 @@
-import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
-import { thunk } from 'redux-thunk';
-import {
-  userLoginReducer,
-  userRegisterReducer,
-  userDetailsReducer,
-  userUpdateProfileReducer,
-} from './reducers/userReducers';
-import {
-  traineeListReducer,
-  traineeDetailsReducer,
-  traineeCreateReducer,
-  traineeUpdateReducer,
-  traineeDeleteReducer,
-} from './reducers/traineeReducers';
+import { configureStore } from '@reduxjs/toolkit';
+import createSagaMiddleware from 'redux-saga';
+import userReducer from './slices/userSlice';
+import traineeReducer from './slices/traineeSlice';
+import rootSaga from './sagas/rootSaga';
 
-// Custom compose function that uses Redux DevTools if available
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+// Create saga middleware
+const sagaMiddleware = createSagaMiddleware();
 
-// Combine reducers
-const reducer = combineReducers({
-  userLogin: userLoginReducer,
-  userRegister: userRegisterReducer,
-  userDetails: userDetailsReducer,
-  userUpdateProfile: userUpdateProfileReducer,
-  traineeList: traineeListReducer,
-  traineeDetails: traineeDetailsReducer,
-  traineeCreate: traineeCreateReducer,
-  traineeUpdate: traineeUpdateReducer,
-  traineeDelete: traineeDeleteReducer,
+// Configure store with Redux Toolkit
+const store = configureStore({
+  reducer: {
+    user: userReducer,
+    trainee: traineeReducer,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      thunk: true, // Enable thunk for Redux Toolkit
+      serializableCheck: {
+        // Ignore these action types
+        ignoredActions: [
+          'USER_LOGIN_REQUEST', 'USER_LOGIN_SUCCESS', 'USER_LOGIN_FAILURE',
+          'USER_REGISTER_REQUEST', 'USER_REGISTER_SUCCESS', 'USER_REGISTER_FAILURE',
+          'USER_DETAILS_REQUEST', 'USER_DETAILS_SUCCESS', 'USER_DETAILS_FAILURE',
+          'USER_UPDATE_PROFILE_REQUEST', 'USER_UPDATE_PROFILE_SUCCESS', 'USER_UPDATE_PROFILE_FAILURE',
+          'USER_LOGOUT',
+          'TRAINEE_LIST_REQUEST', 'TRAINEE_LIST_SUCCESS', 'TRAINEE_LIST_FAILURE',
+          'TRAINEE_DETAILS_REQUEST', 'TRAINEE_DETAILS_SUCCESS', 'TRAINEE_DETAILS_FAILURE',
+          'TRAINEE_CREATE_REQUEST', 'TRAINEE_CREATE_SUCCESS', 'TRAINEE_CREATE_FAILURE',
+          'TRAINEE_UPDATE_REQUEST', 'TRAINEE_UPDATE_SUCCESS', 'TRAINEE_UPDATE_FAILURE',
+          'TRAINEE_DELETE_REQUEST', 'TRAINEE_DELETE_SUCCESS', 'TRAINEE_DELETE_FAILURE'
+        ],
+      },
+    }).concat(sagaMiddleware),
+  devTools: process.env.NODE_ENV !== 'production',
 });
 
-// Get user info from localStorage
-const userInfoFromStorage = localStorage.getItem('userInfo')
-  ? JSON.parse(localStorage.getItem('userInfo'))
-  : null;
-
-// Initial state
-const initialState = {
-  userLogin: { userInfo: userInfoFromStorage },
-};
-
-// Middleware
-const middleware = [thunk];
-
-// Create store
-const store = createStore(
-  reducer,
-  initialState,
-  composeEnhancers(applyMiddleware(...middleware))
-);
+// Run saga middleware with root saga
+sagaMiddleware.run(rootSaga);
 
 export default store;

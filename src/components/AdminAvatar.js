@@ -1,7 +1,10 @@
 import React from 'react';
 import { Badge } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
+import { getAvatarUrl } from '../utils/avatarUtils';
 
 const AdminAvatar = () => {
+  const { userInfo } = useSelector((state) => state.user);
   return (
     <div
       className="admin-avatar-container mb-4 d-flex align-items-center"
@@ -31,7 +34,7 @@ const AdminAvatar = () => {
         border: '3px solid rgba(239, 124, 142, 0.3)',
       }}>
         <img
-          src="https://randomuser.me/api/portraits/men/1.jpg"
+          src={userInfo ? getAvatarUrl(userInfo) : "https://randomuser.me/api/portraits/men/1.jpg"}
           alt="Admin"
           style={{
             width: '100%',

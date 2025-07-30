@@ -3,7 +3,8 @@ import { Row, Col, Card, Form, Button, Container } from 'react-bootstrap';
 import AdminAvatar from '../components/AdminAvatar';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { login } from '../redux/actions/userActions';
+import { login } from '../redux/slices/userSlice';
+import { loginRequest } from '../redux/sagas/userSagas';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 
@@ -14,12 +15,13 @@ const HomeScreen = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const userLogin = useSelector((state) => state.userLogin);
-  const { loading, error, userInfo } = userLogin;
+  const { loading, error, userInfo } = useSelector((state) => state.user);
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(login(email, password));
+    // Dispatch both Redux Toolkit and Redux Saga actions
+    dispatch(login({ email, password }));
+    dispatch(loginRequest(email, password));
   };
 
   // If user is already logged in, redirect to dashboard

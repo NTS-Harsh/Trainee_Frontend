@@ -5,7 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import FormContainer from '../components/FormContainer';
-import { login } from '../redux/actions/userActions';
+import { login } from '../redux/slices/userSlice';
+import { loginRequest } from '../redux/sagas/userSagas';
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -15,8 +16,7 @@ const LoginScreen = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const userLogin = useSelector((state) => state.userLogin);
-  const { loading, error, userInfo } = userLogin;
+  const { loading, error, userInfo } = useSelector((state) => state.user);
 
   const redirect = location.search ? location.search.split('=')[1] : '/';
 
@@ -28,7 +28,8 @@ const LoginScreen = () => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    dispatch(login(email, password));
+    // Dispatch only one action to avoid potential infinite loops
+    dispatch(login({ email, password }));
   };
 
   return (

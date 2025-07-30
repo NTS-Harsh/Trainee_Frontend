@@ -14,8 +14,7 @@ import TraineeEditScreen from '../screens/TraineeEditScreen';
 
 const MainLayout = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin;
+  const { userInfo } = useSelector((state) => state.user);
 
   // Check localStorage for sidebar state
   useEffect(() => {

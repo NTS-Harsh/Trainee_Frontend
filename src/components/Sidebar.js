@@ -23,8 +23,7 @@ const Sidebar = () => {
     // Dispatch custom event for same-tab communication
     window.dispatchEvent(new Event('sidebarStateChanged'));
   };
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin;
+  const { userInfo } = useSelector((state) => state.user);
 
   return (
     <>

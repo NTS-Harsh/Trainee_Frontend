@@ -5,12 +5,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import FormContainer from '../components/FormContainer';
-import { register } from '../redux/actions/userActions';
+import { register } from '../redux/slices/userSlice';
+import { registerRequest } from '../redux/sagas/userSagas';
 
 const RegisterScreen = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [department, setDepartment] = useState('');
+  const [gender, setGender] = useState('male');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState(null);
@@ -19,8 +21,7 @@ const RegisterScreen = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const userRegister = useSelector((state) => state.userRegister);
-  const { loading, error, userInfo } = userRegister;
+  const { loading, error, userInfo } = useSelector((state) => state.user);
 
   const redirect = location.search ? location.search.split('=')[1] : '/';
 
@@ -35,7 +36,8 @@ const RegisterScreen = () => {
     if (password !== confirmPassword) {
       setMessage('Passwords do not match');
     } else {
-      dispatch(register(name, email, password, department));
+      // Dispatch only one action to avoid potential infinite loops
+      dispatch(register({ name, email, password, department, gender }));
     }
   };
 
@@ -91,6 +93,33 @@ const RegisterScreen = () => {
             value={department}
             onChange={(e) => setDepartment(e.target.value)}
           ></Form.Control>
+        </Form.Group>
+
+        <Form.Group controlId="gender" className="mb-3">
+          <Form.Label>Gender</Form.Label>
+          <div>
+            <Form.Check
+              type="radio"
+              label="Male"
+              name="gender"
+              id="male"
+              value="male"
+              checked={gender === 'male'}
+              onChange={(e) => setGender(e.target.value)}
+              inline
+              className="me-4"
+            />
+            <Form.Check
+              type="radio"
+              label="Female"
+              name="gender"
+              id="female"
+              value="female"
+              checked={gender === 'female'}
+              onChange={(e) => setGender(e.target.value)}
+              inline
+            />
+          </div>
         </Form.Group>
 
         <Form.Group controlId="password" className="mb-3">

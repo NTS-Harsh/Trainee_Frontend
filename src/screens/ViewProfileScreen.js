@@ -1,33 +1,88 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, ListGroup } from 'react-bootstrap';
 import AdminAvatar from '../components/AdminAvatar';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { getUserDetails } from '../redux/actions/userActions';
+import { getUserDetails } from '../redux/slices/userSlice';
+import { getUserDetailsRequest } from '../redux/sagas/userSagas';
+import { getAvatarUrl } from '../utils/avatarUtils';
 
 const ViewProfileScreen = () => {
+  const [showWelcome, setShowWelcome] = useState(true);
+  const [isHiding, setIsHiding] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const userDetails = useSelector((state) => state.userDetails);
-  const { loading, error, user } = userDetails;
-
-  const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo } = userLogin;
+  const { loading, error, user, userInfo } = useSelector((state) => ({
+    loading: state.user.loading,
+    error: state.user.error,
+    user: state.user.user,
+    userInfo: state.user.userInfo
+  }));
 
   useEffect(() => {
     if (!userInfo) {
       navigate('/login');
     } else {
+      // Dispatch only one action to avoid potential infinite loops
       dispatch(getUserDetails());
     }
+    // Set timeout to hide welcome message after 5 seconds
+    const welcomeTimer = setTimeout(() => {
+      setIsHiding(true);
+      // Wait for animation to complete before removing from DOM
+      setTimeout(() => {
+        setShowWelcome(false);
+      }, 1200); // Match the animation duration
+    }, 3800); // Start hiding after 3.8 seconds to complete the 5 second requirement
+    
+    
+    // Clean up timer on component unmount
+    return () => clearTimeout(welcomeTimer);
   }, [dispatch, navigate, userInfo]);
 
   return (
     <>
       {userInfo && userInfo.role === 'admin' && <AdminAvatar />}
+      
+      {/* Welcome Message */}
+      {userInfo && showWelcome && (
+        <div className={`welcome-message mb-4 text-center ${isHiding ? 'hiding' : ''}`} style={{
+          animation: 'fadeIn 0.5s ease-in-out',
+          transition: 'opacity 0.5s ease-in-out'
+        }}>
+          <div style={{
+            backgroundColor: 'rgba(239, 124, 142, 0.1)',
+            borderRadius: '15px',
+            padding: '15px',
+            boxShadow: '0 5px 15px rgba(0, 0, 0, 0.05)',
+            border: '1px solid rgba(239, 124, 142, 0.2)',
+            maxWidth: '800px',
+            margin: '0 auto',
+            transform: 'translateZ(5px)',
+            position: 'relative'
+          }}>
+            <h2 style={{
+              color: '#ef7c8e',
+              fontWeight: 'bold',
+              marginBottom: '0'
+            }}>
+              <i className="fas fa-hand-sparkles me-2"></i>
+              Welcome, {userInfo.name}!
+            </h2>
+            <p className="text-muted mb-0 mt-2">
+              {new Date().getHours() < 12
+                ? "Good morning! Have a productive day ahead."
+                : new Date().getHours() < 17
+                  ? "Good afternoon! Hope you're having a great day."
+                  : "Good evening! Hope you had a wonderful day."}
+            </p>
+          </div>
+        </div>
+      )}
+      
       <Row className="justify-content-center">
         <Col md={8}>
           <Card className="bg-white shadow-sm border mb-4 profile-card" style={{
@@ -53,15 +108,33 @@ const ViewProfileScreen = () => {
               ) : (
                 <>
                   <div className="text-center mb-4">
-                    <div className="rounded-circle mx-auto mb-3 d-flex align-items-center justify-content-center profile-avatar" style={{
+                    <div className="rounded-circle mx-auto mb-3 overflow-hidden profile-avatar" style={{
                       width: '120px',
                       height: '120px',
-                      backgroundColor: 'rgba(239, 124, 142, 0.1)',
                       boxShadow: '0 10px 20px rgba(239, 124, 142, 0.2)',
                       border: '3px solid rgba(239, 124, 142, 0.3)',
                       transition: 'var(--hover-transition)'
                     }}>
-                      <i className="fas fa-user fa-3x" style={{ color: '#ef7c8e' }}></i>
+                      <img
+                        src={getAvatarUrl(user)}
+                        alt={user.name}
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          objectFit: 'cover',
+                          transition: 'all 0.3s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.transform = 'scale(1.1)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.transform = 'scale(1)';
+                        }}
+                        onError={(e) => {
+                          e.target.onerror = null;
+                          e.target.src = 'https://api.dicebear.com/7.x/identicon/svg?seed=fallback';
+                        }}
+                      />
                     </div>
                     <h3 className="fw-bold">{user.name}</h3>
                     <p className="text-muted">{user.role}</p>
