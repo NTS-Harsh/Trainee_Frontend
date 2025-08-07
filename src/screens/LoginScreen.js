@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import FormContainer from '../components/FormContainer';
-import { login } from '../redux/slices/userSlice';
 import { loginRequest } from '../redux/sagas/userSagas';
 
 const LoginScreen = () => {
@@ -28,8 +27,8 @@ const LoginScreen = () => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    // Dispatch only one action to avoid potential infinite loops
-    dispatch(login({ email, password }));
+    // Dispatch saga action
+    dispatch(loginRequest(email, password));
   };
 
   return (

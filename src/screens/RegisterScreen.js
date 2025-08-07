@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import FormContainer from '../components/FormContainer';
-import { register } from '../redux/slices/userSlice';
 import { registerRequest } from '../redux/sagas/userSagas';
 
 const RegisterScreen = () => {
@@ -36,8 +35,7 @@ const RegisterScreen = () => {
     if (password !== confirmPassword) {
       setMessage('Passwords do not match');
     } else {
-      // Dispatch only one action to avoid potential infinite loops
-      dispatch(register({ name, email, password, department, gender }));
+      dispatch(registerRequest({ name, email, password, department, gender }));
     }
   };
 

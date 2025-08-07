@@ -1,5 +1,22 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice } from '@reduxjs/toolkit';
+// Import saga action types
+import {
+  TRAINEE_LIST_REQUEST,
+  TRAINEE_LIST_SUCCESS,
+  TRAINEE_LIST_FAILURE,
+  TRAINEE_DETAILS_REQUEST,
+  TRAINEE_DETAILS_SUCCESS,
+  TRAINEE_DETAILS_FAILURE,
+  TRAINEE_CREATE_REQUEST,
+  TRAINEE_CREATE_SUCCESS,
+  TRAINEE_CREATE_FAILURE,
+  TRAINEE_UPDATE_REQUEST,
+  TRAINEE_UPDATE_SUCCESS,
+  TRAINEE_UPDATE_FAILURE,
+  TRAINEE_DELETE_REQUEST,
+  TRAINEE_DELETE_SUCCESS,
+  TRAINEE_DELETE_FAILURE
+} from '../sagas/traineeSagas';
 
 // Initial state
 const initialState = {
@@ -9,133 +26,6 @@ const initialState = {
   error: null,
   success: false,
 };
-
-// Async thunks
-export const listTrainees = createAsyncThunk(
-  'trainee/list',
-  async (_, { getState, rejectWithValue }) => {
-    try {
-      const { userInfo } = getState().user;
-
-      const config = {
-        headers: {
-          Authorization: `Bearer ${userInfo.token}`,
-        },
-      };
-
-      const { data } = await axios.get(`/api/trainees`, config);
-      return data;
-    } catch (error) {
-      return rejectWithValue(
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message
-      );
-    }
-  }
-);
-
-export const getTraineeDetails = createAsyncThunk(
-  'trainee/details',
-  async (id, { getState, rejectWithValue }) => {
-    try {
-      const { userInfo } = getState().user;
-
-      const config = {
-        headers: {
-          Authorization: `Bearer ${userInfo.token}`,
-        },
-      };
-
-      const { data } = await axios.get(`/api/trainees/${id}`, config);
-      return data;
-    } catch (error) {
-      return rejectWithValue(
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message
-      );
-    }
-  }
-);
-
-export const createTrainee = createAsyncThunk(
-  'trainee/create',
-  async (trainee, { getState, rejectWithValue }) => {
-    try {
-      const { userInfo } = getState().user;
-
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${userInfo.token}`,
-        },
-      };
-
-      const { data } = await axios.post(`/api/trainees`, trainee, config);
-      return data;
-    } catch (error) {
-      return rejectWithValue(
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message
-      );
-    }
-  }
-);
-
-export const updateTrainee = createAsyncThunk(
-  'trainee/update',
-  async (trainee, { getState, rejectWithValue }) => {
-    try {
-      const { userInfo } = getState().user;
-
-      const config = {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${userInfo.token}`,
-        },
-      };
-
-      const { data } = await axios.put(
-        `/api/trainees/${trainee._id}`,
-        trainee,
-        config
-      );
-      return data;
-    } catch (error) {
-      return rejectWithValue(
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message
-      );
-    }
-  }
-);
-
-export const deleteTrainee = createAsyncThunk(
-  'trainee/delete',
-  async (id, { getState, rejectWithValue }) => {
-    try {
-      const { userInfo } = getState().user;
-
-      const config = {
-        headers: {
-          Authorization: `Bearer ${userInfo.token}`,
-        },
-      };
-
-      await axios.delete(`/api/trainees/${id}`, config);
-      return id;
-    } catch (error) {
-      return rejectWithValue(
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message
-      );
-    }
-  }
-);
 
 // Create the slice
 const traineeSlice = createSlice({
@@ -157,72 +47,73 @@ const traineeSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Saga actions
       // List trainees
-      .addCase(listTrainees.pending, (state) => {
+      .addCase(TRAINEE_LIST_REQUEST, (state) => {
         state.loading = true;
       })
-      .addCase(listTrainees.fulfilled, (state, action) => {
+      .addCase(TRAINEE_LIST_SUCCESS, (state, action) => {
         state.loading = false;
         state.trainees = action.payload;
       })
-      .addCase(listTrainees.rejected, (state, action) => {
+      .addCase(TRAINEE_LIST_FAILURE, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
       
       // Get trainee details
-      .addCase(getTraineeDetails.pending, (state) => {
+      .addCase(TRAINEE_DETAILS_REQUEST, (state) => {
         state.loading = true;
       })
-      .addCase(getTraineeDetails.fulfilled, (state, action) => {
+      .addCase(TRAINEE_DETAILS_SUCCESS, (state, action) => {
         state.loading = false;
         state.trainee = action.payload;
       })
-      .addCase(getTraineeDetails.rejected, (state, action) => {
+      .addCase(TRAINEE_DETAILS_FAILURE, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
       
       // Create trainee
-      .addCase(createTrainee.pending, (state) => {
+      .addCase(TRAINEE_CREATE_REQUEST, (state) => {
         state.loading = true;
       })
-      .addCase(createTrainee.fulfilled, (state, action) => {
+      .addCase(TRAINEE_CREATE_SUCCESS, (state, action) => {
         state.loading = false;
         state.success = true;
         state.trainee = action.payload;
       })
-      .addCase(createTrainee.rejected, (state, action) => {
+      .addCase(TRAINEE_CREATE_FAILURE, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
       
       // Update trainee
-      .addCase(updateTrainee.pending, (state) => {
+      .addCase(TRAINEE_UPDATE_REQUEST, (state) => {
         state.loading = true;
       })
-      .addCase(updateTrainee.fulfilled, (state, action) => {
+      .addCase(TRAINEE_UPDATE_SUCCESS, (state, action) => {
         state.loading = false;
         state.success = true;
         state.trainee = action.payload;
       })
-      .addCase(updateTrainee.rejected, (state, action) => {
+      .addCase(TRAINEE_UPDATE_FAILURE, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })
       
       // Delete trainee
-      .addCase(deleteTrainee.pending, (state) => {
+      .addCase(TRAINEE_DELETE_REQUEST, (state) => {
         state.loading = true;
       })
-      .addCase(deleteTrainee.fulfilled, (state, action) => {
+      .addCase(TRAINEE_DELETE_SUCCESS, (state, action) => {
         state.loading = false;
         state.success = true;
         state.trainees = state.trainees.filter(
           (trainee) => trainee._id !== action.payload
         );
       })
-      .addCase(deleteTrainee.rejected, (state, action) => {
+      .addCase(TRAINEE_DELETE_FAILURE, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

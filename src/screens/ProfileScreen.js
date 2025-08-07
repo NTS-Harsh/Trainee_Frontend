@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { getUserDetails, updateUserProfile, resetUpdateProfile } from '../redux/slices/userSlice';
+import { resetUpdateProfile } from '../redux/slices/userSlice';
 import { getUserDetailsRequest, updateUserProfileRequest } from '../redux/sagas/userSagas';
 
 const ProfileScreen = () => {
@@ -36,7 +36,7 @@ const ProfileScreen = () => {
     } else {
       if (!user || !user.name || success) {
         dispatch(resetUpdateProfile());
-        dispatch(getUserDetails());
+        dispatch(getUserDetailsRequest());
       } else {
         setName(user.name);
         setEmail(user.email);
@@ -72,7 +72,7 @@ const ProfileScreen = () => {
         gender,
         password,
       };
-      dispatch(updateUserProfile(userData));
+      dispatch(updateUserProfileRequest(userData));
     }
   };
 

@@ -4,7 +4,7 @@ import { Form, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { createTrainee, resetTraineeCreate } from '../redux/slices/traineeSlice';
+import { resetTraineeCreate } from '../redux/slices/traineeSlice';
 import { createTraineeRequest } from '../redux/sagas/traineeSagas';
 
 const TraineeCreateScreen = () => {
@@ -48,7 +48,7 @@ const TraineeCreateScreen = () => {
         gender,
         password,
       };
-      dispatch(createTrainee(traineeData));
+      dispatch(createTraineeRequest(traineeData));
     }
   };
 

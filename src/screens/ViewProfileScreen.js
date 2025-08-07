@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { getUserDetails } from '../redux/slices/userSlice';
 import { getUserDetailsRequest } from '../redux/sagas/userSagas';
 import { getAvatarUrl } from '../utils/avatarUtils';
 
@@ -27,7 +26,7 @@ const ViewProfileScreen = () => {
       navigate('/login');
     } else {
       // Dispatch only one action to avoid potential infinite loops
-      dispatch(getUserDetails());
+      dispatch(getUserDetailsRequest());
     }
     // Set timeout to hide welcome message after 5 seconds
     const welcomeTimer = setTimeout(() => {

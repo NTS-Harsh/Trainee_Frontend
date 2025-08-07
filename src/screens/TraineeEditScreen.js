@@ -4,11 +4,7 @@ import { Form, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import {
-  getTraineeDetails,
-  updateTrainee,
-  resetTraineeUpdate
-} from '../redux/slices/traineeSlice';
+import { resetTraineeUpdate } from '../redux/slices/traineeSlice';
 import {
   getTraineeDetailsRequest,
   updateTraineeRequest
@@ -46,8 +42,8 @@ const TraineeEditScreen = () => {
       navigate('/admin/traineelist');
     } else {
       if (!trainee.name || trainee._id !== id) {
-        // Dispatch only one action to avoid potential infinite loops
-        dispatch(getTraineeDetails(id));
+        // Dispatch saga action
+        dispatch(getTraineeDetailsRequest(id));
       } else {
         setName(trainee.name);
         setEmail(trainee.email);
@@ -68,7 +64,7 @@ const TraineeEditScreen = () => {
       gender,
       password: password ? password : undefined,
     };
-    dispatch(updateTrainee(traineeData));
+    dispatch(updateTraineeRequest(traineeData));
   };
 
   return (

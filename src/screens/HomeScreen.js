@@ -3,7 +3,6 @@ import { Row, Col, Card, Form, Button, Container } from 'react-bootstrap';
 import AdminAvatar from '../components/AdminAvatar';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { login } from '../redux/slices/userSlice';
 import { loginRequest } from '../redux/sagas/userSagas';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
@@ -19,8 +18,7 @@ const HomeScreen = () => {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    // Dispatch both Redux Toolkit and Redux Saga actions
-    dispatch(login({ email, password }));
+    // Dispatch saga action
     dispatch(loginRequest(email, password));
   };
 

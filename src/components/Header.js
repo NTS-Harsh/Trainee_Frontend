@@ -2,7 +2,6 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Navbar, Nav, Container, NavDropdown } from 'react-bootstrap';
-import { logout } from '../redux/slices/userSlice';
 import { logoutRequest } from '../redux/sagas/userSagas';
 
 const Header = () => {
@@ -11,8 +10,8 @@ const Header = () => {
   const { userInfo } = useSelector((state) => state.user);
 
   const logoutHandler = () => {
-    // Dispatch only one action to avoid potential infinite loops
-    dispatch(logout());
+    // Dispatch saga action
+    dispatch(logoutRequest());
   };
 
   return (
